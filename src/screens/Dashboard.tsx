@@ -9,6 +9,7 @@ import { RadioButton } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ManagerModal from '../modal/ManagerModal';
 import StaffModal from '../modal/StaffModal';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface nav {
     navigation: any,
@@ -40,23 +41,31 @@ export default function Dashboard({ navigation, route }: nav) {
 
 
 
-    useEffect(() => {
-        const checkSavedData = async () => {
-            try {
-                const save = await AsyncStorage.getItem('data');
-                if (save) {
-                    setManagerData(JSON.parse(save));
+    useFocusEffect(
+        React.useCallback(() => {
+            const checkSavedData = async () => {
+                try {
+                    const save = await AsyncStorage.getItem('data');
+                    console.log("save is:->", save);
+
+                    if (save) {
+                        setManagerData(JSON.parse(save));
+                    }
+
+                    const save2 = await AsyncStorage.getItem('datastaff');
+                    console.log("save2 is:->", save2);
+
+                    if (save2) {
+                        setStaffData(JSON.parse(save2));
+                    }
+                } catch (error) {
+                    console.log('error in useFocusEffect', error);
                 }
-                const save2 = await AsyncStorage.getItem('datastaff');
-                if (save2) {
-                    setStaffData(JSON.parse(save2));
-                }
-            } catch (error) {
-                console.log('error in useEffect', error);
-            }
-        };
-        checkSavedData();
-    }, [])
+            };
+
+            checkSavedData();
+        }, [])
+    );
 
     const saveData = async (item: any) => {
         try {

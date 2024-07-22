@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Drawer = createDrawerNavigator();
 
+
 const CustomDrawerContent = (props: any) => {
     const handleLogout = () => {
         Alert.alert('Logout', 'Are you sure you want to logout?', [
@@ -22,6 +23,10 @@ const CustomDrawerContent = (props: any) => {
                     AsyncStorage.removeItem('data');
                     AsyncStorage.removeItem('datastaff');
 
+                    props.navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'AuthNavigation' }],
+                    });
                 },
             },
         ]);

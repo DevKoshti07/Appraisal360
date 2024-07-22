@@ -1,4 +1,4 @@
-import { Image, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { Image, Pressable, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect } from 'react'
 import { fonts } from '../assets/fonts'
 import { Img } from '../assets/images';
@@ -15,6 +15,9 @@ const TEXT_LABELS: any = {
     staffdep: 'Department',
     staffdob: 'Date of Birth',
     staffgender: 'Gender',
+    // nameReviwer: 'Manager Name',
+    desc: 'Description',
+    rating: 'Rating',
 };
 
 export default function StaffDetails({ navigation, route }: rou) {
@@ -22,7 +25,7 @@ export default function StaffDetails({ navigation, route }: rou) {
     let { info } = route.params
 
     useEffect(() => {
-        console.log("route value for staff", info);
+        console.log("route value for staff Details Screen", info);
 
     }, [])
     return (
@@ -46,13 +49,18 @@ export default function StaffDetails({ navigation, route }: rou) {
                                     {TEXT_LABELS[key]}:
                                 </Text>
                                 <Text style={styles.value}>
-                                    {info[key]}
+                                    {info[key] === undefined ? '--' : info[key]}
                                 </Text>
                             </View>
                         ))}
                     </View>
                 </View>
             </View>
+            <TouchableOpacity style={{ alignItems: 'center', marginTop: 10 }} onPress={() => navigation.navigate('ManagerList', { name: info.stafffirstName })}>
+                <Text style={{ color: 'black', fontSize: 18, fontFamily: fonts.SEMIBOLD }}>
+                    Manager List
+                </Text>
+            </TouchableOpacity>
         </SafeAreaView>
     )
 }
@@ -71,13 +79,13 @@ const styles = StyleSheet.create({
     },
     label: {
         color: 'black',
-        fontSize: 16,
+        fontSize: 20,
         marginLeft: 12,
         fontFamily: fonts.SEMIBOLD,
     },
     value: {
         color: 'black',
-        fontSize: 16,
+        fontSize: 18,
         marginLeft: 12,
         marginBottom: 10,
         fontFamily: fonts.REGULAR,

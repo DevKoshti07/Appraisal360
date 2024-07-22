@@ -14,6 +14,9 @@ const TEXT_LABELS: any = {
     mob: 'Mobile Number',
     dob: 'Date of Birth',
     gender: 'Gender',
+    // nameReviwer: 'Employee Name',
+    desc: 'Description',
+    rating: 'Rating',
 };
 
 export default function ManagerDetails({ navigation, route }: rou) {
@@ -21,7 +24,7 @@ export default function ManagerDetails({ navigation, route }: rou) {
     let { info } = route.params
 
     useEffect(() => {
-        console.log("route value", info);
+        console.log("route value in Manager Details", info);
 
     }, [])
     return (
@@ -45,14 +48,14 @@ export default function ManagerDetails({ navigation, route }: rou) {
                                     {TEXT_LABELS[key]}:
                                 </Text>
                                 <Text style={styles.value}>
-                                    {info[key]}
+                                    {info[key] === undefined ? '--' : info[key]}
                                 </Text>
                             </View>
                         ))}
                     </View>
                 </View>
             </View>
-            <TouchableOpacity style={{ alignItems: 'center', marginTop: 10 }}>
+            <TouchableOpacity style={{ alignItems: 'center', marginTop: 10 }} onPress={() => navigation.navigate('EmpList', { name: info.firstName })}>
                 <Text style={{ color: 'black', fontSize: 18, fontFamily: fonts.SEMIBOLD }}>
                     Employee List
                 </Text>

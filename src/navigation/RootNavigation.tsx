@@ -9,6 +9,7 @@ import AuthNavigation from './AuthNavigation';
 import { NavigationContainer } from '@react-navigation/native';
 import SplashScreen from '../screens/SplashScreen';
 import EmpList from '../screens/EmpList';
+import ManagerList from '../screens/ManagerList';
 
 const Stack = createNativeStackNavigator();
 
@@ -54,7 +55,13 @@ const RootNavigation: React.FC = () => {
         <Stack.Screen
           name="EmpList"
           component={EmpList}
-          options={{ headerShown: false }}
+          options={{ headerTitle: 'Employee List' }}
+        />
+
+        <Stack.Screen
+          name="ManagerList"
+          component={ManagerList}
+          options={{ headerTitle: 'Manager List' }}
         />
 
       </Stack.Navigator>
