@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Img } from '../assets/images';
 import { fonts } from '../assets/fonts';
 import Slider from '@react-native-community/slider';
+import NoData from '../components/NoData';
 
 interface Manager {
     staffId: string;
@@ -106,11 +107,7 @@ export default function ManagerList({ navigation }: EmpListProps) {
                     showsVerticalScrollIndicator={false}
                 />
             ) : (
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 18, color: 'black', fontFamily: fonts.SEMIBOLD }}>
-                        No Data Found
-                    </Text>
-                </View>
+                <NoData />
             )}
         </View>
     );

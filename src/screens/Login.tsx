@@ -12,16 +12,13 @@ import {
 
 import Toast from 'react-native-toast-message';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import RootNavigation from '../navigation/RootNavigation';
 import CustomTextInput from '../components/CustomTextInput';
 import CustomButton from '../components/CustomButton';
 import { Img } from '../assets/images';
 import { fonts } from '../assets/fonts';
+import { emailRegex, passwordRegex } from '../utils/regex';
+import { useDispatch, useSelector } from 'react-redux';
+import { emailAction, loggedAction, passwordAction, remeberAction } from '../redux/authSlice';
 
 interface nav {
   navigation: any
@@ -31,6 +28,14 @@ const Login = ({ navigation }: nav) => {
   const uname = 'dev@gmail.com';
   const pass = 'Dev@123456';
   const remeber = 'ticked';
+
+  const dispatch = useDispatch();
+
+  const storedUserName = useSelector((state: any) => state.auth.email)
+  const storedPassword = useSelector((state: any) => state.auth.password)
+  const rem = useSelector((state: any) => state.auth.isRemember)
+
+  console.log("from redux store:-->>", storedUserName, storedPassword, rem)
 
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
@@ -42,14 +47,10 @@ const Login = ({ navigation }: nav) => {
 
   const loadStoredCredentials = async () => {
     try {
-      const storedUserName = await AsyncStorage.getItem('userName');
-      const storedPassword = await AsyncStorage.getItem('password');
-      console.log('useEffect in Login:-->>', storedUserName, storedPassword);
-
       if (storedUserName && storedPassword) {
         setUserName(storedUserName);
         setPassword(storedPassword);
-        setRememberMe(true);
+        setRememberMe(rem);
       }
     } catch (error) {
       console.error('Error loading stored credentials:', error);
@@ -64,10 +65,6 @@ const Login = ({ navigation }: nav) => {
   };
 
   const handleSignIn = async () => {
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
     if (!emailRegex.test(userName)) {
       Toast.show({
@@ -100,27 +97,10 @@ const Login = ({ navigation }: nav) => {
         text2: 'Login Successful',
       });
 
-      if (rememberMe) {
-        try {
-          await AsyncStorage.setItem('userName', userName);
-          await AsyncStorage.setItem('password', password);
-          await AsyncStorage.setItem('remembertracker', rememberMe.toString());
-        } catch (error) {
-          console.error('Error storing credentials:', error);
-        }
-      } else {
-        try {
-          // await AsyncStorage.removeItem('userName');
-          // await AsyncStorage.removeItem('password');
-          // await AsyncStorage.removeItem('remembertracker');
-          await AsyncStorage.setItem('userNameCommon', userName);
-          await AsyncStorage.setItem('passwordCommon', password);
-        } catch (error) {
-          console.error('Error clearing stored credentials:', error);
-        }
-      }
-
-      await AsyncStorage.setItem('isLogged', 'login');
+      dispatch(emailAction(userName))
+      dispatch(passwordAction(password))
+      dispatch(remeberAction(rememberMe))
+      dispatch(loggedAction(true))
 
       navigation.reset({
         index: 0,

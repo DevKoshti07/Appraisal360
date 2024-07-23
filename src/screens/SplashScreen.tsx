@@ -2,6 +2,7 @@ import { Image, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Img } from '../assets/images'
+import { useSelector } from 'react-redux'
 
 interface navi {
   navigation: any
@@ -9,22 +10,25 @@ interface navi {
 
 export default function SplashScreen({ navigation }: navi) {
 
+  const check = useSelector((state: any) => state.auth.isLogged)
+  console.log("check is:-->>", check);
+
+
   useEffect(() => {
     getData()
   }, [])
 
   const getData = async () => {
     try {
-      const res = await AsyncStorage.getItem('isLogged')
-      console.log("response is", res);
-
-      if (res == null) {
+      if (check == false) {
         setTimeout(() => {
           navigation.navigate('AuthNavigation')
         }, 2000)
       }
       else {
-        navigation.navigate('DrawerNavigator');
+        setTimeout(() => {
+          navigation.navigate('DrawerNavigator');
+        }, 2000);
       }
 
     } catch (error) {

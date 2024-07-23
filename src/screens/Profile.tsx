@@ -3,37 +3,30 @@ import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Img } from '../assets/images';
 import { fonts } from '../assets/fonts';
+import { useSelector } from 'react-redux';
 
 export default function Profile() {
     const [userName, setUserName] = useState<any>('');
     const [password, setPassword] = useState<any>('');
     const [rememberMe, setRememberMe] = useState<any>('');
 
+    const storedUserName = useSelector((state: any) => state.auth.email)
+    const storedPassword = useSelector((state: any) => state.auth.password)
+    const reme = useSelector((state: any) => state.auth.isRemember)
+    console.log("reme", reme);
+
+
     useEffect(() => {
         const checkSavedData = async () => {
             try {
-
-                const storedRemember = await AsyncStorage.getItem('remembertracker');
-
-                console.log("Stored username, password, and remember me:", storedRemember);
-                if (storedRemember == null) {
-                    const storedUserNameCommon = await AsyncStorage.getItem('userNameCommon');
-                    const storedPasswordCommon = await AsyncStorage.getItem('passwordCommon');
-                    console.log("remember not ticked", storedUserNameCommon, storedUserNameCommon);
-                    setUserName(storedUserNameCommon);
-                    setPassword(storedPasswordCommon);
-                    setRememberMe('No')
-
+                setUserName(storedUserName);
+                setPassword(storedPassword);
+                if (reme == true) {
+                    setRememberMe('Yes')
                 }
                 else {
-                    const storedUserName = await AsyncStorage.getItem('userName');
-                    const storedPassword = await AsyncStorage.getItem('password');
-                    console.log("remember ticked", storedUserName, storedUserName);
-                    setUserName(storedUserName);
-                    setPassword(storedPassword);
-                    setRememberMe('Yes');
+                    setRememberMe('No')
                 }
-
             } catch (error) {
                 console.log('Error in useEffect:', error);
             }

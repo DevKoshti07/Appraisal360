@@ -1,15 +1,19 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Alert, FlatList, Image, Modal, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, useWindowDimensions } from 'react-native';
+import { Alert, Button, FlatList, Image, Modal, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import { Img } from '../assets/images';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { fonts } from '../assets/fonts';
 import { Picker } from '@react-native-picker/picker';
-import { RadioButton } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ManagerModal from '../modal/ManagerModal';
 import StaffModal from '../modal/StaffModal';
 import { useFocusEffect } from '@react-navigation/native';
+import { mobileRegex, nameRegex } from '../utils/regex';
+import { showAlert } from '../utils/showAlert';
+import NoData from '../components/NoData';
+import { useDispatch, useSelector } from 'react-redux';
+import { increment } from '../redux/authSlice';
 
 interface nav {
     navigation: any,
@@ -19,6 +23,12 @@ interface nav {
 export default function Dashboard({ navigation, route }: nav) {
 
     const layout = useWindowDimensions();
+
+    const dispatch = useDispatch();
+
+    const number = useSelector((state: any) => state.auth.value)
+    console.log("number", number);
+
 
     const [modalManager, setmodalManager] = useState<boolean>(false);
     const [managerFirstName, setmanagerFirstName] = useState<string>('');
@@ -83,25 +93,22 @@ export default function Dashboard({ navigation, route }: nav) {
     };
 
     const submitManagerFun = (data: any) => {
-        const nameRegex = /^[A-Za-z ]+$/;
-        const mobileRegex = /^[0-9]{10}$/;
 
-        // Validation checks
         if (data.fname === '') {
-            Alert.alert('Enter First Name');
+            showAlert('Enter First Name');
         } else if (!nameRegex.test(data.fname)) {
-            Alert.alert('Enter Valid First Name');
+            showAlert('Enter Valid First Name');
         } else if (data.lname === '') {
-            Alert.alert('Enter Last Name');
+            showAlert('Enter Last Name');
         } else if (!nameRegex.test(data.lname)) {
-            Alert.alert('Enter Valid Last Name');
+            showAlert('Enter Valid Last Name');
         }
-        //  else if (mobile.length === 0) {
-        //     Alert.alert('Enter Mobile Number');
-        // } 
-        // else if (!mobileRegex.test(mobile)) {
-        //     Alert.alert('Enter Valid Mobile Number');
-        // } 
+        else if (mobile.length === 0) {
+            showAlert('Enter Mobile Number');
+        }
+        else if (!mobileRegex.test(mobile)) {
+            showAlert('Enter Valid Mobile Number');
+        }
         else {
             const newManager = {
                 firstName: data.fname,
@@ -135,26 +142,21 @@ export default function Dashboard({ navigation, route }: nav) {
     const submitStaffFun = (data: any) => {
         console.log("submit time data is:-->>", data);
 
-
-        const nameRegex = /^[A-Za-z ]+$/;
-        const mobileRegex = /^[0-9]{10}$/;
-
-        // Validation checks
         if (data.fname === '') {
-            Alert.alert('Enter Staff First Name');
+            showAlert('Enter Staff First Name');
         } else if (!nameRegex.test(data.fname)) {
-            Alert.alert('Enter Valid First Name');
+            showAlert('Enter Valid First Name');
         } else if (data.lname === '') {
-            Alert.alert('Enter Last Name');
+            showAlert('Enter Last Name');
         } else if (!nameRegex.test(data.lname)) {
-            Alert.alert('Enter Valid Last Name');
+            showAlert('Enter Valid Last Name');
         }
-        //  else if (staffmobile.length === 0) {
-        //     Alert.alert('Enter Mobile Number');
-        // } 
-        // else if (!mobileRegex.test(staffmobile)) {
-        //     Alert.alert('Enter Valid Mobile Number');
-        // } 
+        else if (staffmobile.length === 0) {
+            showAlert('Enter Mobile Number');
+        }
+        else if (!mobileRegex.test(staffmobile)) {
+            showAlert('Enter Valid Mobile Number');
+        }
         else {
             const newStaff = {
                 stafffirstName: data.fname,
@@ -201,6 +203,8 @@ export default function Dashboard({ navigation, route }: nav) {
         <SafeAreaView style={{ flex: 1 }}>
             <View style={{ flex: 1, backgroundColor: '#fff', position: 'relative' }} >
 
+                <Button title='Add' onPress={() => dispatch(increment())} />
+
                 {managerData.length > 0 ? (
                     <FlatList
                         data={managerData}
@@ -234,12 +238,7 @@ export default function Dashboard({ navigation, route }: nav) {
                         showsVerticalScrollIndicator={false}
                     />
                 ) : (
-                    <View
-                        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 18, color: 'black', fontFamily: fonts.SEMIBOLD }}>
-                            No Data Found
-                        </Text>
-                    </View>
+                    <NoData />
                 )}
 
                 <TouchableOpacity
@@ -316,12 +315,7 @@ export default function Dashboard({ navigation, route }: nav) {
                         showsVerticalScrollIndicator={false}
                     />
                 ) : (
-                    <View
-                        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 18, color: 'black', fontFamily: fonts.SEMIBOLD }}>
-                            No Data Found
-                        </Text>
-                    </View>
+                    <NoData />
                 )}
 
                 <TouchableOpacity

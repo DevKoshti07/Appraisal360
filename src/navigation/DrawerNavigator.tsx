@@ -4,11 +4,16 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerI
 import Dashboard from '../screens/Dashboard';
 import Profile from '../screens/Profile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch } from 'react-redux';
+import { loggedAction } from '../redux/authSlice';
 
 const Drawer = createDrawerNavigator();
 
 
 const CustomDrawerContent = (props: any) => {
+
+    const dispatch = useDispatch();
+
     const handleLogout = () => {
         Alert.alert('Logout', 'Are you sure you want to logout?', [
             {
@@ -18,11 +23,9 @@ const CustomDrawerContent = (props: any) => {
             {
                 text: 'Logout',
                 onPress: () => {
-                    AsyncStorage.removeItem('userNameCommon');
-                    AsyncStorage.removeItem('passwordCommon');
                     AsyncStorage.removeItem('data');
                     AsyncStorage.removeItem('datastaff');
-
+                    dispatch(loggedAction(false))
                     props.navigation.reset({
                         index: 0,
                         routes: [{ name: 'AuthNavigation' }],

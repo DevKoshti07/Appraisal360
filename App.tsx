@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -23,11 +23,10 @@ const App: React.FC = () => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <Fragment>
       <RootNavigation />
       <Toast position="top" config={toastConfig} topOffset={0} />
-
-    </View>
+    </Fragment>
   );
 };
 

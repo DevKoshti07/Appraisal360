@@ -9,9 +9,10 @@ import {
     StyleSheet,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { RadioButton } from 'react-native-paper';
 import { Img } from '../assets/images';
 import { fonts } from '../assets/fonts';
+import CustomDropdown from '../components/CustomDropdown';
+import CustomRadioButtons from '../components/CustomRadioButtons';
 
 interface StaffModalProps {
     modalVisibleStaff: boolean;
@@ -34,27 +35,29 @@ interface StaffModalProps {
 const StaffModal: React.FC<StaffModalProps> = ({
     modalVisibleStaff,
     hideModalStaff,
-    staffFirstName,
-    setstaffFirstName,
-    staffLastName,
-    setstaffLastName,
-    staffmobile,
-    setstaffMobile,
-    staffdepartment,
-    setstaffDepartment,
-    staffdob,
-    setstaffDOB,
-    staffgender,
-    setstaffGender,
     submitstaffFun,
 }) => {
 
     const [fname, setfname] = useState('');
     const [lname, setLname] = useState('');
     const [mob, setMob] = useState('');
-    const [dept, setDept] = useState('');
+    const [dept, setDept] = useState('IT');
     const [dob, setDOB] = useState('');
     const [gen, setGen] = useState('');
+
+    const [selectedDept, setSelectedDept] = useState('IT');
+    const departmentOptions: string[] = ['IT', 'Sales', 'Management'];
+
+    const [selectedGender, setSelectedGender] = useState('male');
+    const genderOptions: string[] = ['Male', 'Female'];
+
+    const handleGenderChange = (value: string) => {
+        setSelectedGender(value);
+    };
+
+    const handleDeptChange = (value: string) => {
+        setSelectedDept(value);
+    };
 
     return (
         <Modal
@@ -94,32 +97,6 @@ const StaffModal: React.FC<StaffModalProps> = ({
                         maxLength={10}
                     />
 
-                    <View style={styles.dropdownContainer}>
-                        <Text style={styles.dropdownLabel}>Department:</Text>
-                        <Picker
-                            selectedValue={dept}
-                            style={styles.picker}
-                            onValueChange={(itemValue, itemIndex) =>
-                                setDept(itemValue)
-                            }>
-                            <Picker.Item
-                                label="IT"
-                                value="IT"
-                                style={styles.pickerItem}
-                            />
-                            <Picker.Item
-                                label="Sales"
-                                value="Sales"
-                                style={styles.pickerItem}
-                            />
-                            <Picker.Item
-                                label="Management"
-                                value="Management"
-                                style={styles.pickerItem}
-                            />
-                        </Picker>
-                    </View>
-
                     <TextInput
                         placeholder="Date of Birth"
                         value={dob}
@@ -128,28 +105,24 @@ const StaffModal: React.FC<StaffModalProps> = ({
                         keyboardType="numeric"
                     />
 
-                    <View style={styles.radioContainer}>
-                        <Text style={styles.radioLabel}>Gender:</Text>
-                        <RadioButton.Group
-                            onValueChange={(newValue) =>
-                                setGen(newValue)
-                            }
-                            value={gen}>
-                            <View style={styles.radioButton}>
-                                <RadioButton value="male" />
-                                <Text style={styles.radioText}>Male</Text>
-                            </View>
-                            <View style={styles.radioButton}>
-                                <RadioButton value="female" />
-                                <Text style={styles.radioText}>Female</Text>
-                            </View>
-                        </RadioButton.Group>
-                    </View>
+                    <CustomRadioButtons
+                        value={selectedGender}
+                        onValueChange={handleGenderChange}
+                        options={genderOptions}
+                    />
+
+
+                    <CustomDropdown
+                        selectedValue={selectedDept}
+                        onValueChange={handleDeptChange}
+                        options={departmentOptions}
+                    />
+
 
                     <View style={styles.btnContainer}>
                         <TouchableOpacity
                             style={styles.btnSubmit}
-                            onPress={() => submitstaffFun({ fname, lname, mob, dept, dob, gen })}>
+                            onPress={() => submitstaffFun({ fname, lname, mob, selectedDept, dob, selectedGender })}>
                             <Text style={styles.btnText}>Submit</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -196,6 +169,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         fontSize: 16,
         paddingHorizontal: 10,
+        marginVertical: 15,
         fontFamily: fonts.SEMIBOLD,
     },
     dropdownContainer: {
@@ -240,7 +214,7 @@ const styles = StyleSheet.create({
     btnContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 20,
+        marginTop: 40,
     },
     btnSubmit: {
         backgroundColor: '#007FFF',
